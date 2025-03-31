@@ -1,10 +1,10 @@
-package com.eshopping.eshopping;
+package com.eshopping.project;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EshoppingApplicationTests {
+class ProjectApplicationTests {
 
 	@Test
 	void contextLoads() {
