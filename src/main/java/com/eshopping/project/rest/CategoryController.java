@@ -2,6 +2,7 @@ package com.eshopping.project.rest;
 
 import com.eshopping.project.entities.Category;
 import com.eshopping.project.service.ICategoryService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class CategoryController {
     private ICategoryService categoryService;
 
@@ -20,18 +22,18 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/api/public/categories")
-    public List<Category> getCategories(){
-        return categoryService.getCategories();
+    @GetMapping("/public/categories")
+    public ResponseEntity<List<Category>> getCategories(){
+        return ResponseEntity.ok(categoryService.getCategories());
     }
 
-    @PostMapping("/api/admin/category")
-    public String createCategory(@RequestBody Category category){
+    @PostMapping("/admin/category")
+    public ResponseEntity<String> createCategory(@RequestBody Category category){
         categoryService.addCategory(category);
-        return "Category created successfully";
+        return ResponseEntity.ok("Category created");
     }
 
-    @DeleteMapping("/api/admin/category/{categoryId}")
+    @DeleteMapping("/admin/category/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
         try{
             categoryService.removeCategory(categoryId);

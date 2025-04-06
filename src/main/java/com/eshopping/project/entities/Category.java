@@ -1,13 +1,16 @@
 package com.eshopping.project.entities;
 
-public class Category {
-    private Long categoryId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity(name = "categories")
+@Table(name = "category", schema = Schema.Product)
+public class Category extends BaseEntity {
     private String name;
 
     public Category() {}
 
-    public Category(Long categoryId, String name) {
-        this.categoryId = categoryId;
+    public Category(String name) {
         this.name = name;
     }
 
@@ -19,18 +22,14 @@ public class Category {
         this.name = name;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public Long getCategoryId(){
+        return this.getId();
     }
 
     @Override
     public String toString() {
         return "Category info: \n" +
-                "Id: " + this.categoryId.toString() + "\n" +
+                "Id: " + this.getId().toString() + "\n" +
                 "Name: " + this.name;
     }
 }
