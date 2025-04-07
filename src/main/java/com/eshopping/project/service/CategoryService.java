@@ -1,6 +1,8 @@
 package com.eshopping.project.service;
 
 import com.eshopping.project.entities.Category;
+import com.eshopping.project.exceptions.ApiException;
+import com.eshopping.project.exceptions.ResourceNotFoundException;
 import com.eshopping.project.repositories.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,12 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public void addCategory(Category category) {
+        Optional<Category> savedCategory = this.categoryRepository
+                .findByName(category.getName());
+
+        if(savedCategory.isPresent()) {
+            throw new ApiException("Category with name " + category.getName() + " already exists!!!");
+        }
         this.categoryRepository.save(category);
     }
 
@@ -38,7 +46,7 @@ public class CategoryService implements ICategoryService {
         Optional<Category> category = this.categoryRepository.findById(categoryId);
 
         if(category.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+            throw new ResourceNotFoundException("Category", "categoryId", categoryId);
         }
 
         this.categoryRepository.delete(category.get());

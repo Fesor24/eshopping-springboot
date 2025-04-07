@@ -2,10 +2,12 @@ package com.eshopping.project.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity(name = "categories")
 //@Table(name = "category", schema = Schema.Product)
-public class Category extends BaseEntity {
+public final class Category extends BaseEntity {
+    @NotBlank(message = "Name can not be empty")
     private String name;
 
     public Category() {}

@@ -2,6 +2,7 @@ package com.eshopping.project.rest;
 
 import com.eshopping.project.entities.Category;
 import com.eshopping.project.service.ICategoryService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<String> createCategory(@RequestBody Category category){
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
         categoryService.addCategory(category);
         return ResponseEntity.ok("Category created");
     }
