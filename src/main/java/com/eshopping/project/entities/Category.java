@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity(name = "categories")
-@Table(name = "category", schema = Schema.Product)
+//@Table(name = "category", schema = Schema.Product)
 public class Category extends BaseEntity {
     private String name;
 
