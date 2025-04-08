@@ -1,6 +1,8 @@
 package com.eshopping.project.rest;
 
 import com.eshopping.project.entities.Category;
+import com.eshopping.project.models.requests.CreateCategoryRequest;
+import com.eshopping.project.models.response.GetCategoryResponse;
 import com.eshopping.project.primitives.ResultT;
 import com.eshopping.project.service.ICategoryService;
 import com.eshopping.project.shared.ApiBaseResponse;
@@ -23,22 +25,22 @@ public class CategoryController extends BaseController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<ApiResponse<List<Category>>> getCategories(){
-        return ResponseEntity.ok(new ApiResponse<List<Category>>(
+    public ResponseEntity<ApiResponse<List<GetCategoryResponse>>> getCategories(){
+        return ResponseEntity.ok(new ApiResponse<List<GetCategoryResponse>>(
                 this.categoryService.getCategories().getBody()
         ));
     }
 
     @GetMapping("/public/category/{categoryId}")
-    public ResponseEntity<ApiResponse<Category>> getById(@PathVariable Long categoryId){
-        ResultT<Category> response = this.categoryService.getById(categoryId);
+    public ResponseEntity<ApiResponse<GetCategoryResponse>> getById(@PathVariable Long categoryId){
+        ResultT<GetCategoryResponse> response = this.categoryService.getById(categoryId);
 
         return response.match(this::handleSuccess, this::handleError);
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<ApiBaseResponse> createCategory(@Valid @RequestBody Category category){
-        var response = categoryService.addCategory(category);
+    public ResponseEntity<ApiBaseResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request){
+        var response = categoryService.addCategory(request);
 
         return response.match(this::handleEmptySuccess, this::handleEmptyError);
     }
