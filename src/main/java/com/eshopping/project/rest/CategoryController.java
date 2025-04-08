@@ -1,12 +1,12 @@
 package com.eshopping.project.rest;
 
 import com.eshopping.project.entities.Category;
-import com.eshopping.project.primitives.Result;
 import com.eshopping.project.primitives.ResultT;
 import com.eshopping.project.service.ICategoryService;
+import com.eshopping.project.shared.ApiBaseResponse;
+import com.eshopping.project.shared.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class CategoryController {
+public class CategoryController extends BaseController {
     private ICategoryService categoryService;
 
     @Autowired
@@ -23,22 +23,30 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<ResultT<List<Category>>> getCategories(){
-        return ResponseEntity.ok(Result.create(
-                this.categoryService.getCategories()
+    public ResponseEntity<ApiResponse<List<Category>>> getCategories(){
+        return ResponseEntity.ok(new ApiResponse<List<Category>>(
+                this.categoryService.getCategories().getBody()
         ));
     }
 
+    @GetMapping("/public/category/{categoryId}")
+    public ResponseEntity<ApiResponse<Category>> getById(@PathVariable Long categoryId){
+        ResultT<Category> response = this.categoryService.getById(categoryId);
+
+        return response.match(this::handleSuccess, this::handleError);
+    }
+
     @PostMapping("/admin/category")
-    public ResponseEntity<Result> createCategory(@Valid @RequestBody Category category){
-        categoryService.addCategory(category);
-        return ResponseEntity.ok(Result.success());
+    public ResponseEntity<ApiBaseResponse> createCategory(@Valid @RequestBody Category category){
+        var response = categoryService.addCategory(category);
+
+        return response.match(this::handleEmptySuccess, this::handleEmptyError);
     }
 
     @DeleteMapping("/admin/category/{categoryId}")
-    public ResponseEntity<Result> deleteCategory(@PathVariable Long categoryId){
-        categoryService.removeCategory(categoryId);
+    public ResponseEntity<ApiBaseResponse> deleteCategory(@PathVariable Long categoryId){
+        var response = categoryService.removeCategory(categoryId);
 
-        return new ResponseEntity<>(Result.success(), HttpStatus.OK);
+        return response.match(this::handleEmptySuccess, this::handleEmptyError);
     }
 }

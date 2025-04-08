@@ -3,8 +3,8 @@ package com.eshopping.project.primitives;
 public class Error {
     public static Error None = new Error("", "");
 
-    private String code;
-    private String message;
+    protected final String code;
+    protected final String message;
 
     public Error(String code, String message){
         this.code = code;

@@ -1,9 +1,12 @@
 package com.eshopping.project.primitives;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 public sealed class Result permits ResultT{
-    private boolean isSuccess;
-    private boolean isFailure;
-    private Error error;
+    protected final boolean isSuccess;
+    protected boolean isFailure;
+    protected final Error error;
 
     public Result(){
         isSuccess = true;
@@ -19,12 +22,16 @@ public sealed class Result permits ResultT{
         return new Result();
     }
 
-    public static Result failure(Error error){
-        return new Result(error);
-    }
-
     public static <TBody> ResultT<TBody> create(TBody body){
         return new ResultT<>(body);
+    }
+
+    public static <TBody> ResultT<TBody> failure(Error error){
+        return new ResultT<>(error);
+    }
+
+    public <TResult> TResult match(Supplier<TResult> success, Function<Error, TResult> failure){
+        return this.getIsSuccess() ? success.get() : failure.apply(getError());
     }
 
     public Error getError(){

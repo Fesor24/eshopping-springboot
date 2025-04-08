@@ -3,6 +3,8 @@ package com.eshopping.project.service;
 import com.eshopping.project.entities.Category;
 import com.eshopping.project.exceptions.ApiException;
 import com.eshopping.project.exceptions.ResourceNotFoundException;
+import com.eshopping.project.primitives.*;
+import com.eshopping.project.primitives.Error;
 import com.eshopping.project.repositories.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,30 +28,45 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public void addCategory(Category category) {
+    public Result addCategory(Category category) {
         Optional<Category> savedCategory = this.categoryRepository
                 .findByName(category.getName());
 
         if(savedCategory.isPresent()) {
-            throw new ApiException("Category with name " + category.getName() + " already exists!!!");
+            return Result.failure(new BadRequestError("category.exist", "Category with name exist"));
         }
         this.categoryRepository.save(category);
+
+        return Result.success();
     }
 
     @Override
-    public List<Category> getCategories() {
-        return this.categoryRepository.findAll();
+    public ResultT<List<Category>> getCategories() {
+        return Result.create(this.categoryRepository.findAll());
     }
 
     @Override
-    public void removeCategory(Long categoryId) {
+    public ResultT<Category> getById(Long id) {
+        Optional<Category> category = this.categoryRepository.findById(id);
+
+        return category.map(ResultT::new) // ctor reference...calls the appropriate ctor
+                .orElseGet(() -> Result.failure(
+                        new Error("not.found", "Category not found")));
+
+    }
+
+    @Override
+    public Result removeCategory(Long categoryId) {
         Optional<Category> category = this.categoryRepository.findById(categoryId);
 
         if(category.isEmpty()){
-            throw new ResourceNotFoundException("Category", "categoryId", categoryId);
+            return Result.failure(new NotFoundError(
+                    "not.found", "Category not found"));
         }
 
         this.categoryRepository.delete(category.get());
+
+        return Result.success();
 
 
 //        Category category = categories.stream()
