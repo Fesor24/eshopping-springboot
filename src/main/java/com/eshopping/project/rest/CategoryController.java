@@ -1,8 +1,9 @@
 package com.eshopping.project.rest;
 
-import com.eshopping.project.entities.Category;
-import com.eshopping.project.models.requests.CreateCategoryRequest;
-import com.eshopping.project.models.response.GetCategoryResponse;
+import com.eshopping.project.models.requests.category.CategorySearchParams;
+import com.eshopping.project.models.requests.category.CreateCategoryRequest;
+import com.eshopping.project.models.response.PaginatedList;
+import com.eshopping.project.models.response.category.GetCategoryResponse;
 import com.eshopping.project.primitives.ResultT;
 import com.eshopping.project.service.ICategoryService;
 import com.eshopping.project.shared.ApiBaseResponse;
@@ -25,9 +26,20 @@ public class CategoryController extends BaseController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity<ApiResponse<List<GetCategoryResponse>>> getCategories(){
-        return ResponseEntity.ok(new ApiResponse<List<GetCategoryResponse>>(
-                this.categoryService.getCategories().getBody()
+    public ResponseEntity<ApiResponse<PaginatedList<GetCategoryResponse>>> getCategories(
+            @RequestParam(name="pageSize", required = false) Integer pageSize,
+            @RequestParam(name="pageNumber", required = false) Integer pageNumber,
+            @RequestParam(name= "sortBy", required = false, defaultValue = "name") String sortBy,
+            @RequestParam(name= "sortOrder", required = false, defaultValue = "asc") String sortOrder
+    ){
+        CategorySearchParams searchParams = new CategorySearchParams();
+        searchParams.setPageSize(pageSize);
+        searchParams.setPageNumber(pageNumber);
+        searchParams.setSortBy(sortBy);
+        searchParams.setSortOrder(sortOrder);
+
+        return ResponseEntity.ok(new ApiResponse<PaginatedList<GetCategoryResponse>>(
+                this.categoryService.search(searchParams).getBody()
         ));
     }
 

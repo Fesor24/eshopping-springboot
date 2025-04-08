@@ -1,4 +1,4 @@
-package com.eshopping.project.models.requests;
+package com.eshopping.project.models.requests.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

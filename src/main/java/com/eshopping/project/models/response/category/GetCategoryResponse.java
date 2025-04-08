@@ -1,4 +1,4 @@
-package com.eshopping.project.models.response;
+package com.eshopping.project.models.response.category;
 
 public final class GetCategoryResponse {
     Long id;

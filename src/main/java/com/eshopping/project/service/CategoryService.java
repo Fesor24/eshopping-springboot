@@ -1,21 +1,21 @@
 package com.eshopping.project.service;
 
 import com.eshopping.project.entities.Category;
-import com.eshopping.project.exceptions.ApiException;
-import com.eshopping.project.exceptions.ResourceNotFoundException;
-import com.eshopping.project.models.requests.CreateCategoryRequest;
-import com.eshopping.project.models.response.GetCategoryResponse;
+import com.eshopping.project.models.requests.category.CategorySearchParams;
+import com.eshopping.project.models.requests.category.CreateCategoryRequest;
+import com.eshopping.project.models.response.PaginatedList;
+import com.eshopping.project.models.response.category.GetCategoryResponse;
 import com.eshopping.project.primitives.*;
 import com.eshopping.project.primitives.Error;
 import com.eshopping.project.repositories.ICategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +39,7 @@ public class CategoryService implements ICategoryService {
                 .findByName(request.getName());
 
         if(savedCategory.isPresent()) {
-            return Result.failure(new BadRequestError("category.exist", "Category with name exist"));
+            return Result.failure(Error.BadRequest("category.exist", "Category with name exist"));
         }
 
         Category category = new Category(request.getName());
@@ -50,14 +50,29 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public ResultT<List<GetCategoryResponse>> getCategories() {
-        List<Category> categories = this.categoryRepository.findAll();
+    public ResultT<PaginatedList<GetCategoryResponse>> search(CategorySearchParams searchParams) {
+        Sort sort = searchParams.getSortOrder().equalsIgnoreCase("asc") ?
+                Sort.by(searchParams.getSortBy()).ascending() :
+                Sort.by(searchParams.getSortBy()).descending();
 
-        List<GetCategoryResponse> categoriesResponse = categories
+        Pageable pageDetails = PageRequest.of(
+                searchParams.getPageNumber(),
+                searchParams.getPageSize(), sort);
+
+        Page<Category> categories = this.categoryRepository.findAll(pageDetails);
+
+        List<GetCategoryResponse> categoriesResponse = categories.getContent()
                 .stream().map(category -> modelMapper.map(category, GetCategoryResponse.class))
                 .collect(Collectors.toList());
 
-        return Result.create(categoriesResponse);
+        PaginatedList<GetCategoryResponse> response = new PaginatedList<>();
+        response.setContent(categoriesResponse);
+        response.setPageNumber(categories.getNumber());
+        response.setPageSize(categories.getSize());
+        response.setTotalElements(categories.getNumberOfElements());
+        response.setTotalPages(categories.getTotalPages());
+
+        return Result.create(response);
     }
 
     @Override
@@ -66,7 +81,7 @@ public class CategoryService implements ICategoryService {
 
         ResultT<Category> response = category.map(ResultT::new) // ctor reference...calls the appropriate ctor
                 .orElseGet(() -> Result.failure(
-                        new Error("not.found", "Category not found")));
+                        Error.NotFound("not.found", "Category not found")));
 
         if(response.getIsSuccess())
             return Result.create(modelMapper.map(response.getBody(), GetCategoryResponse.class));
@@ -79,7 +94,7 @@ public class CategoryService implements ICategoryService {
         Optional<Category> category = this.categoryRepository.findById(categoryId);
 
         if(category.isEmpty()){
-            return Result.failure(new NotFoundError(
+            return Result.failure(Error.NotFound(
                     "not.found", "Category not found"));
         }
 
