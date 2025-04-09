@@ -22,7 +22,7 @@ public class PaginatedList<TBody> {
     }
 
     public void setPageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
+        this.pageNumber = ++pageNumber;
     }
 
     public Integer getTotalPages() {

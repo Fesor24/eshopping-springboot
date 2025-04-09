@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class CategoryController extends BaseController {
-    private ICategoryService categoryService;
+    private final ICategoryService categoryService;
 
     @Autowired
     public CategoryController(ICategoryService categoryService) {
@@ -52,14 +52,14 @@ public class CategoryController extends BaseController {
 
     @PostMapping("/admin/category")
     public ResponseEntity<ApiBaseResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request){
-        var response = categoryService.addCategory(request);
+        var response = categoryService.add(request);
 
         return response.match(this::handleEmptySuccess, this::handleEmptyError);
     }
 
     @DeleteMapping("/admin/category/{categoryId}")
     public ResponseEntity<ApiBaseResponse> deleteCategory(@PathVariable Long categoryId){
-        var response = categoryService.removeCategory(categoryId);
+        var response = categoryService.delete(categoryId);
 
         return response.match(this::handleEmptySuccess, this::handleEmptyError);
     }

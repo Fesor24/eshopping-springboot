@@ -1,5 +1,6 @@
 package com.eshopping.project.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,8 +16,9 @@ public final class Category extends BaseEntity {
     private String name;
 
     //@OneToMany // specifying this alone will create a categories_products separate entity
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     // Now, the class 'Product' will manage this relationship using the 'catageory' property
+    // CascadeType.PERSIST...when we add the category, the corresponding products if any is also added...
     private List<Product> products = new ArrayList<Product>();
 
     public Category() {}
@@ -35,6 +37,14 @@ public final class Category extends BaseEntity {
 
     public Long getCategoryId(){
         return this.getId();
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Product> getProducts(){
+        return this.products;
     }
 
     @Override

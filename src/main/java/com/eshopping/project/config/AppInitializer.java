@@ -1,7 +1,9 @@
 package com.eshopping.project.config;
 
 import com.eshopping.project.entities.Category;
+import com.eshopping.project.entities.Product;
 import com.eshopping.project.repositories.ICategoryRepository;
+import com.eshopping.project.repositories.IProductRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -18,6 +21,9 @@ public class AppInitializer {
 
     @Autowired
     private ICategoryRepository categoryRepository;
+
+    @Autowired
+    private IProductRepository productRepository;
 
     @Bean
     public CommandLineRunner seedDatabase() {
@@ -37,7 +43,15 @@ public class AppInitializer {
                     new TypeReference<List<Category>>() {});
 
             for(Category category: categories){
-                System.out.println(category.getName());
+                List<Product> categoryProducts = new ArrayList<Product>();
+
+                for(Product product: category.getProducts()){
+                    product.setCategory(category);
+                    categoryProducts.add(product);
+                    System.out.println(category.getName() + " product item: " + product.getName());
+                }
+
+                category.getProducts().addAll(categoryProducts);
             }
 
             this.categoryRepository.saveAll(categories);

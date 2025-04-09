@@ -9,9 +9,8 @@ import com.eshopping.project.primitives.ResultT;
 
 import java.util.List;
 
-public interface ICategoryService {
-    Result addCategory(CreateCategoryRequest request);
-    ResultT<PaginatedList<GetCategoryResponse>> search(CategorySearchParams searchParams);
+public interface ICategoryService extends IBaseEntityService<GetCategoryResponse, Long>{
+    Result add(CreateCategoryRequest request);
     ResultT<GetCategoryResponse> getById(Long id);
-    Result removeCategory(Long categoryId);
+    Result delete(Long categoryId);
 }

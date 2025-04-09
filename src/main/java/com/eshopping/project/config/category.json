@@ -1,8 +1,32 @@
 [
   {
-    "name": "Office tools"
+    "name": "Office Equipments",
+    "products": [
+      {
+        "name": "Stapler",
+        "description": "Bind documents",
+        "price": 5000
+      }
+    ]
   },
   {
-    "name": "Kitchen tools"
+    "name": "Kitchen Equipments",
+    "products": [
+      {
+        "name": "Table Knife",
+        "description": "Durable table knife",
+        "price": 300
+      }
+    ]
+  },
+  {
+    "name": "Gadgets and Accessories",
+    "products": [
+      {
+        "name": "Airpods",
+        "description": "Apple airpods 2 pro max",
+        "price": 250000
+      }
+    ]
   }
 ]
