@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class CategoryService implements ICategoryService {
-    //private List<Category> categories = new ArrayList<Category>();
-
     private ICategoryRepository categoryRepository;
     private ModelMapper modelMapper;
 
@@ -77,16 +75,18 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public ResultT<GetCategoryResponse> getById(Long id) {
-        Optional<Category> category = this.categoryRepository.findById(id);
-
-        ResultT<Category> response = category.map(ResultT::new) // ctor reference...calls the appropriate ctor
+        ResultT<Category> categoryResult = this.categoryRepository.findById(id)
+                .map(ResultT::new)
                 .orElseGet(() -> Result.failure(
-                        Error.NotFound("not.found", "Category not found")));
+                        Error.NotFound("not.found", "Category not found")
+                ));
 
-        if(response.getIsSuccess())
-            return Result.create(modelMapper.map(response.getBody(), GetCategoryResponse.class));
+        if(!categoryResult.getIsSuccess())
+            return Result.failure(categoryResult.getError());
 
-        return Result.failure(response.getError());
+        GetCategoryResponse categoryResponse = modelMapper.map(categoryResult.getBody(), GetCategoryResponse.class);
+
+        return categoryResponse.toResult();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.eshopping.project.models.response.category;
 
-public final class GetCategoryResponse {
+import com.eshopping.project.models.response.BaseResponse;
+
+public final class GetCategoryResponse extends BaseResponse<GetCategoryResponse> {
     Long id;
     String name;
 
