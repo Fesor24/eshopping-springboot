@@ -16,7 +16,7 @@ public final class Category extends BaseEntity {
     private String name;
 
     //@OneToMany // specifying this alone will create a categories_products separate entity
-    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     // Now, the class 'Product' will manage this relationship using the 'catageory' property
     // CascadeType.PERSIST...when we add the category, the corresponding products if any is also added...
     private List<Product> products = new ArrayList<Product>();
