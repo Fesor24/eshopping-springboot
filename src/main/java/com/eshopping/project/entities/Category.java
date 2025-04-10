@@ -54,3 +54,10 @@ public final class Category extends BaseEntity {
                 "Name: " + this.name;
     }
 }
+
+
+// CascadeType.MERGE -> when the parent entity is merged (i.e updated), the associated child entities are also merged
+// CascadeType.Remove -> if we want related entities to be removed when parent entity is removed...
+// CascadeType.REFRESH -> when the parent entity is reloaded from db, child entities are refreshed to match DB state...
+// CascadeType.DETACH -> when the parent entity is detached from the persistence context, the child entities are detached. They are no longer managed by EntityManager
+// CascadeType.ALL -> Applies to all the cascade types...
