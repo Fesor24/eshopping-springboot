@@ -5,10 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Entity(name = "categories")
 //@Table(name = "category", schema = Schema.Product)
 public final class Category extends BaseEntity {
@@ -25,26 +29,6 @@ public final class Category extends BaseEntity {
 
     public Category(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getCategoryId(){
-        return this.getId();
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public List<Product> getProducts(){
-        return this.products;
     }
 
     @Override

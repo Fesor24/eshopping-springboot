@@ -1,8 +1,11 @@
 package com.eshopping.project.primitives;
 
+import lombok.Data;
+
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Data
 public sealed class Result permits ResultT{
     protected final boolean isSuccess;
     protected boolean isFailure;
@@ -31,15 +34,7 @@ public sealed class Result permits ResultT{
     }
 
     public <TResult> TResult match(Supplier<TResult> success, Function<Error, TResult> failure){
-        return this.getIsSuccess() ? success.get() : failure.apply(getError());
-    }
-
-    public Error getError(){
-        return this.error;
-    }
-
-    public boolean getIsSuccess(){
-        return this.isSuccess;
+        return this.isSuccess ? success.get() : failure.apply(getError());
     }
 
     public boolean getIsFailure(){

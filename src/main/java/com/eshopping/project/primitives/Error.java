@@ -1,5 +1,8 @@
 package com.eshopping.project.primitives;
 
+import lombok.Data;
+
+@Data
 public class Error {
     public static Error None = new Error("", "");
 
@@ -17,13 +20,5 @@ public class Error {
 
     public static BadRequestError BadRequest(String code, String message){
         return new BadRequestError(code, message);
-    }
-
-    public String getCode() {
-        return this.code;
-    }
-
-    public String getMessage() {
-        return this.message;
     }
 }

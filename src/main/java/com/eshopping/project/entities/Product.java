@@ -1,9 +1,13 @@
 package com.eshopping.project.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Entity
 @Table(name="products")
 public class Product extends BaseEntity{
@@ -14,39 +18,15 @@ public class Product extends BaseEntity{
     @Column(name="price", precision = 18, scale=2)
     private BigDecimal price;
 
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Category getCategory() {
-        return this.category;
-    }
 }
+
+// Default fetch types
+// OneToMany -> Lazy
+// ManyToOne -> Eager
+// ManyToMany -> Lazy
+// OneToOne -> Eager

@@ -16,11 +16,11 @@ public final class ResultT<TBody> extends Result {
     }
 
     public <TResult> TResult match(Function<TBody, TResult> success, Function<Error, TResult> failure){
-        return this.getIsSuccess() ? success.apply(this.getBody()) : failure.apply(getError());
+        return this.isSuccess ? success.apply(this.getBody()) : failure.apply(getError());
     }
 
     public TBody getBody() {
-        if(getIsSuccess()){
+        if(isSuccess){
             return this.body;
         }else{
             throw new RuntimeException("Value cannot be accessed!");
